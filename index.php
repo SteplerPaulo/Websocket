@@ -1,0 +1,67 @@
+<!DOCTYPE html> 
+	<meta charset="utf-8" /> 
+	<title>WebSocket Test</title>
+	<script type="text/javascript" src="/websocket/jquery.min.js"></script>
+	<script language="javascript" type="text/javascript"> 
+		var wsUri = "ws://echo.websocket.org/";
+		var output;  
+		function init() {
+			output = document.getElementById("output");
+			testWebSocket();
+		} 
+		function testWebSocket() { 
+			websocket = new WebSocket(wsUri);
+			websocket.onopen = function(evt) { onOpen(evt) };
+			websocket.onclose = function(evt) { onClose(evt) };
+			websocket.onmessage = function(evt) { onMessage(evt) };
+			websocket.onerror = function(evt) { onError(evt) };
+		} 
+		function onOpen(evt) {
+			writeToScreen("CONNECTED"); 
+			doSend("WebSocket rocks");
+		}  
+		function onClose(evt) {
+			writeToScreen("DISCONNECTED"); 
+		} 
+		function onMessage(evt) { 
+			writeToScreen('<span style="color: blue;">RESPONSE: ' + evt.data+'</span>'); 
+			websocket.close(); 
+		}  
+		function onError(evt) { 
+			writeToScreen('<span style="color: red;">ERROR:</span> ' + evt.data); 
+		} 
+		function doSend(message) {
+			writeToScreen("SENT: " + message); 
+			websocket.send(message);
+		} 
+		function writeToScreen(message) { 
+			var pre = document.createElement("p");
+			pre.style.wordWrap = "break-word"; pre.innerHTML = message; output.appendChild(pre); 
+		} 
+		//window.addEventListener("load", init, false);  
+	</script> 
+	<div id="main">
+        <div id="echo">
+          <div id="echo-config" style="float: left;">
+            <strong>Location:</strong><br>
+            <input id="wsUri" size="35">
+            <br>
+            <input type="checkbox" id="secureCb" onclick="toggleTls();">
+            <span id="secureCbLabel" style="font-size: smaller; color: black;">Use secure WebSocket (TLS)</span><br>
+            <button id="connect">Connect</button>
+            <button id="disconnect" disabled="">Disconnect</button>
+            <br>
+            <br>
+            <strong>Message:</strong><br>
+            <input id="sendMessage" size="35" value="Rock it with HTML5 WebSocket" disabled="">
+            <br>
+            <button id="send" class="wsButton" disabled="">Send</button>
+          </div>
+          <div id="echo-log" style="float: left; margin-left: 20px; padding-left: 20px; width: 350px; border-left: solid 1px #cccccc;"> <strong>Log:</strong>
+            <div id="consoleLog"></div>
+            <button id="clearLogBut" style="position: relative; top: 3px;">Clear log</button>
+          </div>
+          <div class="clearfix"></div>
+        </div>
+    </div>
+</html>
